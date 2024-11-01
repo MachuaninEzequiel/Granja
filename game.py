@@ -7,8 +7,8 @@ import pygame
 class Game:
     def __init__(self):
         self.renderer = Renderer('map.txt')
-        self.player = Player(self.renderer)
-        self.farm = Farm()
+        self.farm = Farm(self.renderer)
+        self.player = Player(self.renderer, self.farm)
         self.running = True
 
     def start(self):
@@ -26,14 +26,12 @@ class Game:
                     elif event.key == pygame.K_d:
                         self.player.move('d')
                     elif event.key == pygame.K_t:
-                        plant = Plant("Tomate", 2)
-                        self.player.plant(self.farm, plant)
+                        self.player.plant("Tomate")
                     elif event.key == pygame.K_m:
-                        plant = Plant("Morron", 3)
-                        self.player.plant(self.farm, plant)
+                        self.player.plant("Morron")
                     elif event.key == pygame.K_l:
-                        plant = Plant("Lechuga", 1)
-                        self.player.plant(self.farm, plant)
+                        self.player.plant("Lechuga")
                     elif event.key == pygame.K_h:
-                        self.player.harvest(self.farm)
+                        self.player.harvest()
+
             self.renderer.render(self.player.position)

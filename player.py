@@ -1,9 +1,10 @@
 from plant import Plant
 
 class Player:
-    def __init__(self, renderer):
+    def __init__(self, renderer, farm):
         self.position = [1, 5]  # Posición inicial
         self.renderer = renderer
+        self.farm = farm
 
     def move(self, direction):
         new_position = self.position[:]
@@ -20,10 +21,12 @@ class Player:
         if self.renderer.is_walkable(new_position[0], new_position[1]):
             self.position = new_position
 
-    def plant(self, farm, plant):
-        # Intenta plantar una nueva planta en la posición actual del jugador
-        farm.plant_crop(self.position, plant)
+    def plant(self, plant_type):
+        """Planta un tipo de cultivo en la posición actual."""
+        x, y = self.position
+        self.farm.plant(x, y, plant_type)
 
-    def harvest(self, farm):
-        # Intenta cosechar una planta en la posición actual del jugador
-        farm.harvest_crop(self.position)
+    def harvest(self):
+        """Recolecta el cultivo en la posición actual."""
+        x, y = self.position
+        self.farm.harvest(x, y)

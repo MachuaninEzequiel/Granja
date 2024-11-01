@@ -20,10 +20,9 @@ class Renderer:
             return [list(line.strip()) for line in file.readlines()]
 
     def render(self, player_position):
-        self.screen.fill((0, 0, 0))  # Color de fondo negro
-        # Calcular el offset para scroll lateral
+        self.screen.fill((0, 0, 0))  # Fondo negro
         offset_x = max(0, player_position[0] - self.VIEWPORT_WIDTH // 2)
-        
+
         for y, row in enumerate(self.map_data):
             for x, tile in enumerate(row[offset_x:offset_x + self.VIEWPORT_WIDTH]):
                 screen_x = x * self.TILE_SIZE
@@ -39,7 +38,6 @@ class Renderer:
                     continue
                 pygame.draw.rect(self.screen, color, (screen_x, screen_y, self.TILE_SIZE, self.TILE_SIZE))
 
-        # Renderizar el personaje en varias líneas
         self.draw_player(player_position, offset_x)
         pygame.display.flip()
 
