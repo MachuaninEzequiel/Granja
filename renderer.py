@@ -29,11 +29,13 @@ class Renderer:
                 screen_y = y * self.TILE_SIZE
                 
                 if tile == '*':  # Edificio
-                    color = (150, 75, 0)  # Marrón
+                    color = (150, 75, 0)  
                 elif tile == '%':  # Lechuga
-                    color = (0, 255, 0)  # Verde
+                    color = (0, 255, 0)  
                 elif tile == '$':  # Tomate
-                    color = (255, 0, 0)  # Rojo
+                    color = (255, 0, 0)  
+                elif tile == '&':  # Morron amarillo
+                    color = (255, 255, 0)  
                 else:
                     continue
                 pygame.draw.rect(self.screen, color, (screen_x, screen_y, self.TILE_SIZE, self.TILE_SIZE))
