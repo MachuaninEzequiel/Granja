@@ -55,3 +55,9 @@ class Renderer:
         pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 8), (player_x + 16, player_y + 20), 2)  # Cuerpo
         pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 20), (player_x + 12, player_y + 28), 2)  # Pierna izquierda
         pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 20), (player_x + 20, player_y + 28), 2)  # Pierna derecha
+
+    def is_walkable(self, x, y):
+        """Comprueba si el tile en (x, y) es transitable."""
+        if 0 <= x < self.map_width and 0 <= y < self.map_height:
+            return self.map_data[y][x] != '*'
+        return False

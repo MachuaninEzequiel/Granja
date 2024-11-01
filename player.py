@@ -1,20 +1,24 @@
 from plant import Plant
 
 class Player:
-    def __init__(self, map_width, map_height):
+    def __init__(self, renderer):
         self.position = [1, 5]  # Posición inicial
-        self.map_width = map_width
-        self.map_height = map_height
+        self.renderer = renderer
 
     def move(self, direction):
+        new_position = self.position[:]
         if direction == 'w':
-            self.position[1] = max(1, self.position[1] - 1)
+            new_position[1] -= 1
         elif direction == 's':
-            self.position[1] = min(self.map_height - 1, self.position[1] + 1)
+            new_position[1] += 1
         elif direction == 'a':
-            self.position[0] = max(1, self.position[0] - 1)
+            new_position[0] -= 1
         elif direction == 'd':
-            self.position[0] = min(self.map_width - 1, self.position[0] + 1)
+            new_position[0] += 1
+
+        # Verificar si el nuevo tile es transitable
+        if self.renderer.is_walkable(new_position[0], new_position[1]):
+            self.position = new_position
 
     def plant(self, farm, plant):
         # Intenta plantar una nueva planta en la posición actual del jugador
