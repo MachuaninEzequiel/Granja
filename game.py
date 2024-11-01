@@ -6,9 +6,9 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.player = Player()
-        self.farm = Farm()
         self.renderer = Renderer('map.txt')
+        self.player = Player(self.renderer.map_width, self.renderer.map_height)
+        self.farm = Farm()
         self.running = True
 
     def start(self):
