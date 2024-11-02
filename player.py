@@ -1,23 +1,59 @@
+import pygame
+
 class Player:
     def __init__(self, renderer):
-        self.position = [1, 5]
+        self.position = [20, 25]
         self.renderer = renderer
+        self.direction = 'parado'  # Dirección inicial
+        self.speed = 1  # Velocidad de movimiento en píxeles por actualización
+        self.moving = {'up': False, 'down': False, 'left': False, 'right': False}
 
-    def move(self, direction):
-        new_position = self.position[:]
+    def handle_movement(self):
+        """Mueve al jugador continuamente mientras una tecla esté presionada."""
+        new_position = self.position[:]  # Posición en píxeles
+
+        if self.moving['up']:
+            new_position[1] -= self.speed
+            self.direction = 'arriba'
+        elif self.moving['down']:
+            new_position[1] += self.speed
+            self.direction = 'abajo'
+        elif self.moving['left']:
+            new_position[0] -= self.speed
+            self.direction = 'izquierda'
+        elif self.moving['right']:
+            new_position[0] += self.speed
+            self.direction = 'derecha'
+
+        # Convertir la posición a tiles y verificar si es transitable
+        tile_x = int(new_position[0] / self.renderer.TILE_SIZE)
+        tile_y = int(new_position[1] / self.renderer.TILE_SIZE)
+    
+        if self.renderer.is_walkable(tile_x, tile_y):
+            self.position = new_position  # Actualizar la posición solo si es transitable   
+
+    def start_moving(self, direction):
+        """Inicia el movimiento continuo en la dirección dada."""
         if direction == 'w':
-            new_position[1] -= 1
+            self.moving['up'] = True
         elif direction == 's':
-            new_position[1] += 1
+            self.moving['down'] = True
         elif direction == 'a':
-            new_position[0] -= 1
+            self.moving['left'] = True
         elif direction == 'd':
-            new_position[0] += 1
+            self.moving['right'] = True
 
-        # Verificar si el nuevo tile es transitable
-        if self.renderer.is_walkable(new_position[0], new_position[1]):
-            self.position = new_position
-
+    def stop_moving(self, direction):
+        """Detiene el movimiento y cambia el sprite a 'parado'."""
+        if direction == 'w':
+            self.moving['up'] = False
+        elif direction == 's':
+            self.moving['down'] = False
+        elif direction == 'a':
+            self.moving['left'] = False
+        elif direction == 'd':
+            self.moving['right'] = False
+        self.direction = 'parado'
 
     def plant(self, x, y, plant_type):
         """Planta una planta en las coordenadas dadas."""

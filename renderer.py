@@ -1,7 +1,8 @@
 import pygame
+import os
 
 class Renderer:
-    TILE_SIZE = 30  # Tamaño de cada tile (carácter) en píxeles
+    TILE_SIZE = 30  # Tamaño de cada tile en píxeles
     VIEWPORT_WIDTH = 50  # Número de tiles visibles en el ancho de la pantalla
 
     def __init__(self, map_file):
@@ -15,11 +16,20 @@ class Renderer:
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Juego de la Granja")
 
+        # Cargar sprites del personaje
+        self.sprites = {
+            'parado': pygame.image.load(os.path.join('assets', 'parado.png')),
+            'arriba': pygame.image.load(os.path.join('assets', 'arriba.png')),
+            'abajo': pygame.image.load(os.path.join('assets', 'abajo.png')),
+            'derecha': pygame.image.load(os.path.join('assets', 'derecha.png')),
+            'izquierda': pygame.image.load(os.path.join('assets', 'izquierda.png'))
+        }
+
     def load_map(self, map_file):
         with open(map_file, 'r') as file:
             return [list(line.strip()) for line in file.readlines()]
 
-    def render(self, player_position):
+    def render(self, player_position, player_direction):
         self.screen.fill((0, 0, 0))  # Fondo negro
         offset_x = max(0, player_position[0] - self.VIEWPORT_WIDTH // 2)
 
@@ -40,21 +50,19 @@ class Renderer:
                     continue
                 pygame.draw.rect(self.screen, color, (screen_x, screen_y, self.TILE_SIZE, self.TILE_SIZE))
 
-        self.draw_player(player_position, offset_x)
+        # Dibujar el personaje usando el sprite correcto
+        self.draw_player(player_position, offset_x, player_direction)
         pygame.display.flip()
 
-    def draw_player(self, player_position, offset_x):
-        player_x = (player_position[0] - offset_x) * self.TILE_SIZE
-        player_y = player_position[1] * self.TILE_SIZE
-        player_color = (255, 255, 0)  # Amarillo
+    def draw_player(self, player_position, offset_x, direction):
+        # La posición del jugador ya está en píxeles
+        player_x = player_position[0] - offset_x * self.TILE_SIZE
+        player_y = player_position[1]
 
-        # Dibujo del personaje en tres líneas
-        pygame.draw.line(self.screen, player_color, (player_x + 16, player_y), (player_x + 16, player_y + 8), 2)  # Cabeza (O)
-        pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 8), (player_x + 12, player_y + 16), 2)  # Brazo izquierdo
-        pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 8), (player_x + 20, player_y + 16), 2)  # Brazo derecho
-        pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 8), (player_x + 16, player_y + 20), 2)  # Cuerpo
-        pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 20), (player_x + 12, player_y + 28), 2)  # Pierna izquierda
-        pygame.draw.line(self.screen, player_color, (player_x + 16, player_y + 20), (player_x + 20, player_y + 28), 2)  # Pierna derecha
+        # Seleccionar el sprite según la dirección y escalarlo
+        sprite = self.sprites.get(direction, self.sprites['parado'])
+        sprite = pygame.transform.scale(sprite, (self.TILE_SIZE, self.TILE_SIZE))
+        self.screen.blit(sprite, (player_x, player_y))  
 
     def is_walkable(self, x, y):
         """Comprueba si el tile en (x, y) es transitable."""

@@ -5,35 +5,41 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.renderer = Renderer('map.txt')
+        self.renderer = Renderer("map.txt")
         self.player = Player(self.renderer)
-        self.running = True
+        self.clock = pygame.time.Clock()  # Control de la tasa de fotogramas
 
     def start(self):
-        while self.running:
+        running = True
+        while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_w:
-                        self.player.move('w')
+                        self.player.start_moving('w')
                     elif event.key == pygame.K_s:
-                        self.player.move('s')
+                        self.player.start_moving('s')
                     elif event.key == pygame.K_a:
-                        self.player.move('a')
+                        self.player.start_moving('a')
                     elif event.key == pygame.K_d:
-                        self.player.move('d')
-                    elif event.key == pygame.K_t:
-                        x, y = self.player.position
-                        self.player.plant(x, y, "Tomate")
-                    elif event.key == pygame.K_m:
-                        x, y = self.player.position
-                        self.player.plant(x, y, "Morron amarillo")
-                    elif event.key == pygame.K_l:
-                        x, y = self.player.position
-                        self.player.plant(x, y, "Lechuga")
-                    elif event.key == pygame.K_h:
-                        x, y = self.player.position
-                        self.player.harvest(x, y)
+                        self.player.start_moving('d')
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_w:
+                        self.player.stop_moving('w')
+                    elif event.key == pygame.K_s:
+                        self.player.stop_moving('s')
+                    elif event.key == pygame.K_a:
+                        self.player.stop_moving('a')
+                    elif event.key == pygame.K_d:
+                        self.player.stop_moving('d')
 
-            self.renderer.render(self.player.position)
+            
+            self.renderer.render(self.player.position, self.player.direction)
+            # Mueve al jugador y renderiza la pantalla
+            self.player.handle_movement()
+            
+            # Control de la velocidad de fotogramas
+            self.clock.tick(60)
+
+        pygame.quit()
